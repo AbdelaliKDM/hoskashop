@@ -15,7 +15,7 @@ class ItemResource extends JsonResource
     public function toArray($request)
     {
       $product = $this->product()->withTrashed()->first();
-      $subcategory = is_null($product) ? null : $product->subcategory()->withTrashed()->first();
+      //$subcategory = is_null($product) ? null : $product->subcategory()->withTrashed()->first();
 
       if($this->cart->type == 'current'){
         $discount = is_null($product) ? 0 : (is_null($product->discount()) ? 0 : $product->discount()->amount);
@@ -24,8 +24,10 @@ class ItemResource extends JsonResource
       }
         return [
           'product_id' => $this->product_id,
-          'subcategory_id' => is_null($product) ? null : $product->subcategory_id,
-          'category_id' => is_null($subcategory) ? null : $subcategory->category_id,
+          //'subcategory_id' => is_null($product) ? null : $product->subcategory_id,
+          //'category_id' => is_null($subcategory) ? null : $subcategory->category_id,
+          'category_ids' => $product->category_ids(),
+          'subcategory_ids' => $product->subcategory_ids(),
           'unit_name' => empty($this->unit_name) ? $product->unit_name : $this->unit_name ,
           'pack_name' => empty($this->pack_name) ? $product->pack_name : $this->pack_name ,
           'unit_price' => empty($this->unit_price) ? $product->unit_price : $this->unit_price ,

@@ -100,7 +100,9 @@ class Section extends Model
     if ($this->type == 'group') {
 
       $group = Group::find($this->element);
-      $products = Product::whereIn('subcategory_id',  $group->subcategories()->pluck('subcategories.id')->toArray())
+      $products = Product::whereHas('subcategories', function($query) use ($group){
+        $query->whereIn('subcategories.id', $group->subcategories()->pluck('subcategories.id')->toArray());
+      })
       ->inRandomOrder()->take(10)->get();
       return new ProductCollection($products);
 
@@ -130,7 +132,7 @@ class Section extends Model
         $offer = Offer::find($this->element);
 
         $categories = $offer->category_offers()->pluck('category_id')->toArray();
-        $subcategories = Subcategory::whereIn('category_id', $categories)->pluck('id')->toArray();
+        //$subcategories = Subcategory::whereIn('category_id', $categories)->pluck('id')->toArray();
         //$products = Product::whereIn('subcategory_id', $subcategories);
 
         /* $discounts = Discount::whereIn('product_id', $products)
@@ -138,7 +140,10 @@ class Section extends Model
           ->pluck('product_id')->toArray();
           //->inRandomOrder()->limit(10)->get(); */
 
-        $discounted_products = Product::whereIn('subcategory_id', $subcategories)
+        //$discounted_products = Product::whereIn('subcategory_id', $subcategories)
+        $discounted_products = Product::whereHas('subcategories', function ($query) use ($categories) {
+          $query->whereIn('category_id', $categories);
+        })
         ->leftjoin('discounts','products.id','discounts.product_id')
         ->WhereRaw('? between start_date and end_date', Carbon::now()->toDateString())->where('discounts.deleted_at',null)
         ->select('products.*','discounts.id as discount_id','discounts.amount','discounts.start_date','discounts.end_date')
