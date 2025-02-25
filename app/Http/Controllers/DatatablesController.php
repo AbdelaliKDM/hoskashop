@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 
+use App\Models\UserType;
 use Session;
 use App\Models\Ad;
 use App\Models\Cart;
@@ -345,7 +346,8 @@ class DatatablesController extends Controller
 
       ->addColumn('price', function ($row) {
 
-        return number_format($row->unit_price, 2, '.', ',');
+
+        return $row->getPriceaverage();
 
       })
 
@@ -1170,5 +1172,33 @@ class DatatablesController extends Controller
       ->make(true);
   }
 
+
+  public function userTypes(){
+
+    $userTypes = UserType::orderBy('created_at','DESC')->get();
+
+    return datatables()
+      ->of($userTypes)
+      ->addIndexColumn()
+
+      ->addColumn('action', function ($row) {
+          $btn = '';
+
+          $btn .= '<button class="btn btn-icon btn-label-info inline-spacing update" title="' . __('Edit') . '" table_id="' . $row->id . '"><span class="tf-icons bx bx-edit"></span></button>';
+
+          $btn .= '<button class="btn btn-icon btn-label-danger inline-spacing delete" title="' . __('Delete') . '" table_id="' . $row->id . '"><span class="tf-icons bx bx-trash"></span></button>';
+
+          return $btn;
+      })
+      ->addColumn('name', function ($row) {
+        return $row->name();
+      })
+      ->addColumn('created_at', function ($row) {
+
+        return date('Y-m-d',strtotime($row->created_at));
+
+      })
+      ->make(true);
+  }
 
 }

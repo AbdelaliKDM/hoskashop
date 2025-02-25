@@ -32,6 +32,7 @@ class User extends Authenticatable
     'password',
     'role',
     'status',
+    'user_type_id',
     'fcm_token'
   ];
 

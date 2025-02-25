@@ -12,7 +12,7 @@ return new class extends Migration
     public function up(): void
     {
         Schema::table('notices', function (Blueprint $table) {
-            $table->smallInteger('priority')->after('type')->default(0);
+            $table->smallInteger('priority')->default(0);
             $table->json('metadata')->nullable()->default(null)->after('priority');
         });
     }

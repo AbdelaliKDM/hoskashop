@@ -18,6 +18,7 @@ class ProductResource extends JsonResource
 
         $images = $this->images()->get('path')->pluck('path')->toArray();
         $videos = $this->videos()->get('path')->pluck('path')->toArray();
+        $prices = $this->prices()->get();
 
         $this->image ? array_unshift($images,$this->image) : $images;
 
@@ -29,8 +30,8 @@ class ProductResource extends JsonResource
           'subcategory_ids' => $this->subcategory_ids(),
           'unit_name' => $this->unit_name,
           'pack_name' => $this->pack_name,
-          'unit_price' => $this->unit_price,
-          'pack_price' => $this->pack_price,
+          'unit_price' => $this->getPrice()?->unit_price ?? 0,
+          'pack_price' => $this->getPrice()?->pack_price ?? 0,
           'pack_units' => $this->pack_units,
           'unit_id' => $this->unit_id,
           'unit_type' => $this->unit?->name($request->header('Accept-Language','ar')),
@@ -45,6 +46,7 @@ class ProductResource extends JsonResource
           'description' => $this->description,
           'images' => $images,
           'videos' => $videos,
+          'prices' => $prices,
         ];
     }
 }

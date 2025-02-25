@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\UserTypeController;
 use App\Models\Set;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
@@ -130,6 +131,14 @@ Route::group(['middleware' => ['auth']], function () {
       Route::post('/update', [UnitController::class, 'update']);
       Route::post('/delete', [UnitController::class, 'delete']);
       Route::post('/restore', [UnitController::class, 'restore']);
+  });
+    Route::prefix('user-type')->middleware('role:0,1,2,3')->group(function () {
+    Route::get('/browse', [UserTypeController::class, 'index'])->name('settings-user-type-browse');
+      Route::get('/list', [DatatablesController::class, 'userTypes'])->name('user-type-list');
+      Route::post('/create', [UserTypeController::class, 'create']);
+      Route::post('/update', [UserTypeController::class, 'update']);
+      Route::post('/delete', [UserTypeController::class, 'delete']);
+      Route::post('/restore', [UserTypeController::class, 'restore']);
   });
 
     Route::prefix('family')->middleware('role:0,1,5')->group(function () {

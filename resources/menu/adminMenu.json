@@ -99,6 +99,11 @@
           "url": "/section/browse",
           "name": "Sections",
           "slug": "settings-section-browse"
+        },
+        {
+          "url": "/user-type/browse",
+          "name": "Usertypes",
+          "slug": "settings-section-browse"
         }
       ]
     },

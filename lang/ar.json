@@ -425,5 +425,11 @@
     "Enable Cash Payment": "تفعيل الدفع نقداً",
     "Enable Baridi Mob": "تفعيل بريدي موب",
     "Enable CCP": "CCP تفعيل",
-    "Enable Chargily": "تفعيل Chargily"
+    "Enable Chargily": "تفعيل Chargily",
+    "Usertypes": "أنواع المشتريين",
+    "Browse User Types": "تصفح أنواع المشتريين",
+    "Add User Type": "إضافة نوع مشتري",
+    "User Types Table": "جدول أنواع المشتريين",
+    "Description Ar": "الوصف بالعربية",
+    "Description En": "الوصف بالانجليزية"
 }
