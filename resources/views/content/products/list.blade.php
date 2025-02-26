@@ -376,7 +376,7 @@
                         success: function(response) {
                             if (response.status == 1) {
                                 var $subcategories = $('#subcategory_ids');
-                                $subcategories.empty().append(`<option value="">{{ __('Not selected') }}</option>`);
+                                $subcategories.empty().append(`<option disabled value="">{{ __('Not selected') }}</option>`);
                                 response.data.forEach(function(item) {
                                     $subcategories.append(`<option value="${item.id}">${item.name}</option>`);
                                 });
