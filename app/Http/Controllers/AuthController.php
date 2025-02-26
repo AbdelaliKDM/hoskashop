@@ -130,8 +130,8 @@ class AuthController extends Controller
         'status' => 1,
         'message' => 'success',
         'token' => $token,
-        'user_type' => $user->user_type,
         'data' => new UserResource($user),
+
       ]);
 
     } catch (Exception $e) {
