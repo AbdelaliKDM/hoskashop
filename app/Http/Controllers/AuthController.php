@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\UserType;
 use Exception;
 use App\Models\User;
 use App\Models\Set;
@@ -121,13 +122,15 @@ class AuthController extends Controller
         $user->fcm_token = $request->fcm_token;
         $user->save();
       }
-
+      $userType = UserType::find($user->user_type_id);
+      $user->user_type = $request->lang == 'en' ? $userType->name_en : $userType->name_ar;
       $token = $user->createToken($this->random())->plainTextToken;
 
       return response()->json([
         'status' => 1,
         'message' => 'success',
         'token' => $token,
+        'user_type' => $user->user_type,
         'data' => new UserResource($user),
       ]);
 

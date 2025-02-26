@@ -129,7 +129,7 @@
                                     <div class="form-group col-md-6">
                                         <label class="form-label" for="category_ids">{{ __('Category') }}</label>
                                         <select class="selectpicker form-control" id="category_ids" multiple>
-                                            <option value=""> {{ __('Select category') }}</option>
+                                            <option disabled value=""> {{ __('Select category') }}</option>
                                             @foreach ($categories as $category)
                                                 <option value="{{ $category->id }}"> {{ $category->name }} </option>
                                             @endforeach
@@ -139,7 +139,7 @@
                                     <div class="form-group col-md-6">
                                         <label class="form-label" for="subcategory_id">{{ __('Subcategory') }}</label>
                                         <select class="selectpicker form-control" id="subcategory_ids" multiple>
-                                            <option value=""> {{ __('Select category first') }} </option>
+                                            <option disabled value=""> {{ __('Select category first') }} </option>
                                         </select>
                                     </div>
                                 </div>
@@ -148,7 +148,7 @@
                                     <div class="form-group col-md-6">
                                         <label class="form-label" for="unit_id">{{ __('Unit type') }}</label>
                                         <select class="form-select" id="unit_id" name="unit_id">
-                                            <option value=""> {{ __('Select category') }}</option>
+                                            <option disabled value=""> {{ __('Select category') }}</option>
                                             @foreach ($units as $unit)
                                                 <option value="{{ $unit->id }}"> {{ $unit->name(session('locale')) }}</option>
                                             @endforeach

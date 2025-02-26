@@ -55,6 +55,9 @@ class Product extends Model
     public function getPrice()
     {
         $user = auth()->user();
+        if(!$user){
+          return $this->prices()->where('user_type_id', 1)->first();
+        }
         return $this->prices()->where('user_type_id', $user->user_type_id)->first();
     }
 
