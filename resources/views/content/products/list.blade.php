@@ -23,7 +23,7 @@
                 <h5 class="col-md-auto">{{ __('Products table') }}</h5>
                 <div class="col-md-auto">
                     <select class="form-select filter-select" id="category" name="category">
-                        <option value=""> {{ __('Category filter') }}</option>
+                        <option disabled value=""> {{ __('Category filter') }}</option>
                         @foreach ($categories as $category)
                             <option value="{{ $category->id }}"> {{ $category->name }} </option>
                         @endforeach
@@ -31,19 +31,19 @@
                 </div>
                 <div class="col-md-auto">
                     <select class="form-select filter-select" id="subcategory" name="subcategory">
-                        <option value=""> {{ __('Subcategory filter') }} </option>
+                        <option disabled value=""> {{ __('Subcategory filter') }} </option>
                     </select>
                 </div>
                 <div class="col-md-auto" hidden>
                     <select class="form-select filter-select" id="discount" name="discount">
-                        <option value=""> {{ __('Discount filter') }}</option>
+                        <option disabled value=""> {{ __('Discount filter') }}</option>
                         <option value="1"> {{ __('Discounted') }}</option>
                         <option value="2"> {{ __('Not discounted') }}</option>
                     </select>
                 </div>
                 <div class="col-md-auto">
                     <select class="form-select filter-select" id="availability" name="availability">
-                        <option value=""> {{ __('Availability filter') }}</option>
+                        <option disabled value=""> {{ __('Availability filter') }}</option>
                         <option value="1"> {{ __('Available') }}</option>
                         <option value="2"> {{ __('Unavailable') }}</option>
                     </select>
@@ -275,7 +275,7 @@
                     success: function(response) {
                         if (response.status == 1) {
                             var subcategories = document.getElementById('subcategory');
-                            subcategories.innerHTML = '<option value="">{{ __('Not selected') }}</option>';
+                            subcategories.innerHTML = '<option disabled value="">{{ __('Not selected') }}</option>';
                             for (var i = 0; i < response.data.length; i++) {
                                 var option = document.createElement('option');
                                 option.value = response.data[i].id;
