@@ -19,6 +19,7 @@
         <tr>
           <th>#</th>
           <th>{{__('Name')}}</th>
+          <th>{{__('userType')}}</th>
           <th>{{__('Phone')}}</th>
           <th>{{__('Email')}}</th>
           <th>{{__('Status')}}</th>
@@ -27,6 +28,39 @@
         </tr>
       </thead>
     </table>
+  </div>
+</div>
+<div class="modal fade" id="modal" aria-hidden="true">
+  <div class="modal-dialog modal-md" role="document">
+      <div class="modal-content">
+          <div class="modal-header">
+              <h4 class="fw-bold py-1 mb-1">{{ __('UserType') }}</h4>
+              <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+          </div>
+          <div class="modal-body">
+              <input type="text" id="form_type" hidden />
+              <input type="text" class="form-control" id="id" name="id" hidden />
+              <form class="form-horizontal" onsubmit="event.preventDefault()" action="#"
+                  enctype="multipart/form-data" id="form">
+
+                  <div class="mb-3">
+                      <label class="form-label" for="user_type">{{ __('UserType') }}</label>
+                      <select class="form-select" name="user_type_id" id="user_type">
+
+                      </select>
+                  </div>
+
+
+
+
+                  <div class="mb-3" style="text-align: center">
+                      <button type="submit" id="submit" name="submit"
+                          class="btn btn-primary">{{ __('Send') }}</button>
+                  </div>
+
+              </form>
+          </div>
+      </div>
   </div>
 </div>
 @endsection
@@ -194,6 +228,102 @@
       })
       });
 
+
+
+      $(document.body).on('click', '.update', function() {
+                document.getElementById('form').reset();
+                document.getElementById('form_type').value = "update";
+                var user_id = $(this).attr('table_id');
+                $("#id").val(user_id);
+
+                $.ajax({
+                    url: '{{ url("user/update") }}',
+                    headers: {
+                        'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                    },
+                    type: 'POST',
+                    data: {
+                      user_id: user_id
+                    },
+                    dataType: 'JSON',
+                    success: function(response) {
+                        if (response.status == 1) {
+                            var userType = response.data.user_type_id;
+                            var userTypesHtml = '';
+                            @foreach ($userTypes as $ut)
+                              if("{{$ut->id}}" == userType){
+                                userTypesHtml += '<option value="{{$ut->id}}" selected>{{$ut->name_ar}}</option>';
+                              }else{
+                                userTypesHtml += '<option value="{{$ut->id}}">{{$ut->name_ar}}</option>';
+                              }
+                            @endforeach
+                            $('#user_type').html(userTypesHtml);
+                            $("#modal").modal("show");
+                        }
+                    }
+                });
+            });
+
+
+
+            $('#submit').on('click', function() {
+
+                var formdata = new FormData($("#form")[0]);
+                var formtype = document.getElementById('form_type').value;
+                console.log(formtype);
+                if (formtype == "create") {
+                    url = "{{ url('user/create') }}";
+                }
+
+                if (formtype == "update") {
+                    url = "{{ url('user/update') }}";
+                    formdata.append("user_id", document.getElementById('id').value)
+                }
+
+                $("#modal").modal("hide");
+
+
+                $.ajax({
+                    url: url,
+                    headers: {
+                        'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                    },
+                    type: 'POST',
+                    data: formdata,
+                    dataType: 'JSON',
+                    contentType: false,
+                    processData: false,
+                    success: function(response) {
+                        if (response.status == 1) {
+                            Swal.fire({
+                                title: "{{ __('Success') }}",
+                                text: "{{ __('success') }}",
+                                icon: 'success',
+                                confirmButtonText: 'Ok'
+                            }).then((result) => {
+                                location.reload();
+                            });
+                        } else {
+                            console.log(response.message);
+                            Swal.fire(
+                                "{{ __('Error') }}",
+                                response.message,
+                                'error'
+                            );
+                        }
+                    },
+                    error: function(data) {
+                        var errors = data.responseJSON;
+                        console.log(errors);
+                        Swal.fire(
+                            "{{ __('Error') }}",
+                            errors.message,
+                            'error'
+                        );
+                        // Render the errors with js ...
+                    }
+                });
+});
   });
 
 

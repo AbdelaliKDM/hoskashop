@@ -746,6 +746,7 @@ class DatatablesController extends Controller
         } else {
           $btn .= '<button class="btn btn-icon btn-label-danger inline-spacing restore" title="' . __('Activate') . '" table_id="' . $row->id . '"><span class="tf-icons bx bx-check-circle"></span></button>';
         }
+        $btn .= '<button class="btn btn-icon btn-label-info inline-spacing update" title="' . __('Edit') . '" table_id="' . $row->id . '"><span class="tf-icons bx bx-edit"></span></button>';
 
 
 

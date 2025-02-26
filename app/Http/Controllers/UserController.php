@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\UserType;
 use Exception;
 use App\Models\User;
 use App\Models\Notice;
@@ -18,7 +19,8 @@ class UserController extends Controller
 {
 
   public function index(){
-    return view('content.users.list');
+    $userTypes = UserType::all();
+    return view('content.users.list')->with('userTypes',$userTypes);
   }
     //
     public function update(Request $request){
@@ -44,7 +46,7 @@ class UserController extends Controller
           ]
         );
       }
-
+      // dd($request->all());
       try{
 
         $user = User::find($request->user_id);

@@ -6,6 +6,7 @@
   "images_dropzone_note": "Max 15 files allowed",
   "video_dropzone_message": "Drop video here or click to chose file",
   "images_dropzone_message*": "Drop images here or click to chose files",
-  "Usertypes": "Usertypes"
+  "Usertypes": "User types",
+  "Usertype": "User type"
 
 }

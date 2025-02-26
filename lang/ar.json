@@ -427,6 +427,7 @@
     "Enable CCP": "CCP تفعيل",
     "Enable Chargily": "تفعيل Chargily",
     "Usertypes": "أنواع المشتريين",
+    "userType" :"نوع المشتري",
     "Browse User Types": "تصفح أنواع المشتريين",
     "Add User Type": "إضافة نوع مشتري",
     "User Types Table": "جدول أنواع المشتريين",
