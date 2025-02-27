@@ -67,8 +67,7 @@ class UserController extends Controller
             $user->image = $url;
             $user->save();
         }
-        $userType = UserType::find($user->user_type_id);
-        $user->user_type = $request->lang == 'en' ? $userType->name_en : $userType->name_ar;
+
         if($request->has('status')){
           $user->notify(Notice::ProfileNotice('status', $request->status ? 'active' : 'inactive'));
           $user->update_status($request->status);
@@ -86,7 +85,8 @@ class UserController extends Controller
           $user->phone = $request->phone;
           $user->save();
         }
-
+        $userType = UserType::find($user->user_type_id);
+        $user->user_type = $request->lang == 'en' ? $userType->name_en : $userType->name_ar;
         return response()->json([
           'status' => 1,
           'message' => 'success',
