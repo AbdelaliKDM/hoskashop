@@ -18,62 +18,67 @@ use Chargily\ChargilyPay\Auth\Credentials;
 class UserController extends Controller
 {
 
-  public function index(){
+  public function index()
+  {
     $userTypes = UserType::all();
-    return view('content.users.list')->with('userTypes',$userTypes);
+    return view('content.users.list')->with('userTypes', $userTypes);
   }
-    //
-    public function update(Request $request){
+  //
+  public function update(Request $request)
+  {
 
-      $request->mergeIfMissing(['user_id' => auth()->user()->id]);
+    $request->mergeIfMissing(['user_id' => auth()->user()->id]);
 
-      $validator = Validator::make($request->all(), [
-        //'firstname' => 'sometimes|string',
-        //'lastname' => 'sometimes|string',
-        'user_id' => 'required|exists:users,id',
-        'name' => 'sometimes|string',
-        'phone' => 'sometimes|numeric',
-        /* 'phone' => ['sometimes','numeric','digits:10',Rule::unique('users')->ignore($user->id)], */
-        //'email' => ['sometimes','email',Rule::unique('users')->ignore($user->id)],
-        'image' => 'sometimes|mimetypes:image/*',
-        'status' => 'sometimes|in:0,1,2'
-      ]);
+    $validator = Validator::make($request->all(), [
+      //'firstname' => 'sometimes|string',
+      //'lastname' => 'sometimes|string',
+      'user_id' => 'required|exists:users,id',
+      'name' => 'sometimes|string',
+      'phone' => 'sometimes|numeric',
+      /* 'phone' => ['sometimes','numeric','digits:10',Rule::unique('users')->ignore($user->id)], */
+      //'email' => ['sometimes','email',Rule::unique('users')->ignore($user->id)],
+      'image' => 'sometimes|mimetypes:image/*',
+      'status' => 'sometimes|in:0,1,2'
+    ]);
 
-      if ($validator->fails()){
-        return response()->json([
-            'status' => 0,
-            'message' => $validator->errors()->first()
-          ]
-        );
+    if ($validator->fails()) {
+      return response()->json(
+        [
+          'status' => 0,
+          'message' => $validator->errors()->first()
+        ]
+      );
+    }
+    // dd($request->all());
+    try {
+
+      $user = User::find($request->user_id);
+
+      $user->update($request->except('image', 'status'));
+
+      if ($request->hasFile('image')) {
+        $url = $request->image->store('/uploads/users/images', 'upload');
+
+        /* $file = $request->image;
+        $name = $file->getClientOriginalName();
+        $extension = $file->getClientOriginalExtension();
+
+        $filename = 'users/' . $user->id . '/' . md5(time().$name) . '.' . $extension;
+
+        $url = $this->firestore($file->get(),$filename); */
+
+        $user->image = $url;
+        $user->save();
       }
-      // dd($request->all());
-      try{
 
-        $user = User::find($request->user_id);
+      if ($request->has('status')) {
+        $user->notify(Notice::ProfileNotice('status', $request->status ? 'active' : 'inactive'));
+        $user->update_status($request->status);
+      }
 
-        $user->update($request->except('image','status'));
-
-        if($request->hasFile('image')){
-            $url = $request->image->store('/uploads/users/images','upload');
-
-            /* $file = $request->image;
-            $name = $file->getClientOriginalName();
-            $extension = $file->getClientOriginalExtension();
-
-            $filename = 'users/' . $user->id . '/' . md5(time().$name) . '.' . $extension;
-
-            $url = $this->firestore($file->get(),$filename); */
-
-            $user->image = $url;
-            $user->save();
-        }
-
-        if($request->has('status')){
-          $user->notify(Notice::ProfileNotice('status', $request->status ? 'active' : 'inactive'));
-          $user->update_status($request->status);
-        }
-
-        if (empty($user->customer_id) && $request->phone) {
+      if (empty($user->customer_id) && $request->phone) {
+        $setChargily = Set::chargily_credentials();
+        if ($setChargily['public'] != null && $setChargily['secret'] != null) {
           $chargily_pay = new ChargilyPay(new Credentials(Set::chargily_credentials()));
           $customer = $chargily_pay->customers()->create([
             'name' => $user->name,
@@ -84,155 +89,168 @@ class UserController extends Controller
           $user->customer_id = $customer->getId();
           $user->phone = $request->phone;
           $user->save();
-        }
-        $userType = UserType::find($user->user_type_id);
-        $user->user_type = $request->lang == 'en' ? $userType->name_en : $userType->name_ar;
-        return response()->json([
-          'status' => 1,
-          'message' => 'success',
-          'data' => new UserResource($user)
-        ]);
-
-      }catch(Exception $e){
-        return response()->json([
-          'status' => 0,
-          'message' => $e->getMessage()
-        ]
-      );
-      }
-
-    }
-
-    public function delete(Request $request){
-
-      $validator = Validator::make($request->all(), [
-        'user_id' => 'required',
-      ]);
-
-      if ($validator->fails()){
-        return response()->json([
-            'status' => 0,
-            'message' => $validator->errors()->first()
-          ]
-        );
-      }
-
-      try{
-
-        $user = User::findOrFail($request->user_id);
-
-        $user->delete();
-
-        return response()->json([
-          'status' => 1,
-          'message' => 'success',
-        ]);
-
-      }catch(Exception $e){
-        return response()->json([
-          'status' => 0,
-          'message' => $e->getMessage()
-        ]
-      );
-      }
-
-    }
-
-    public function restore(Request $request){
-
-      $validator = Validator::make($request->all(), [
-        'user_id' => 'required',
-      ]);
-
-      if ($validator->fails()){
-        return response()->json([
-            'status' => 0,
-            'message' => $validator->errors()->first()
-          ]
-        );
-      }
-
-      try{
-
-        $user = User::withTrashed()->findOrFail($request->user_id);
-
-        $user->restore();
-
-        return response()->json([
-          'status' => 1,
-          'message' => 'success',
-          'data' => new UserResource($user)
-        ]);
-
-      }catch(Exception $e){
-        return response()->json([
-          'status' => 0,
-          'message' => $e->getMessage()
-        ]
-      );
-      }
-
-    }
-
-    public function change_password(Request $request){
-
-      $validator = Validator::make($request->all(), [
-        'old_password' => 'required',
-        'new_password' => 'required|min:8|confirmed',
-      ]);
-
-
-
-      if ($validator->fails()) {
-        return response()->json([
-          'status'=> 0,
-          'message' => $validator->errors()->first()
-        ]);
-
-      }
-
-        $user = auth()->user();
-
-        if(Hash::check($request->old_password, $user->password)){
-
-          $user->password = Hash::make($request->new_password);
-          $user->save();
-
-          return response()->json([
-            'status'=> 1,
-            'message' => 'password changed'
-          ]);
-
         }else{
-
-          return response()->json([
-            'status'=> 0,
-            'message' => 'wrong password'
-          ]);
-
+          $user->phone = $request->phone;
+          $user->save();
         }
-
-    }
-
-    public function deactivate(Request $request){
-      try{
-
-        $user = $request->user();
-
-        $user->update(['status' => 2 , 'email' => null , 'fcm_token' => null]);
-
-        $user->tokens()->delete();
-
-        return response()->json([
-          'status'=> 1,
-          'message' => 'success',
-        ]);
-      }catch(Exception $e){
-        return response()->json([
-          'status'=> 0,
-          'message' => $e->getMessage(),
-        ]);
       }
+      $userType = UserType::find($user->user_type_id);
+      $user->user_type = $request->lang == 'en' ? $userType->name_en : $userType->name_ar;
+      return response()->json([
+        'status' => 1,
+        'message' => 'success',
+        'data' => new UserResource($user)
+      ]);
+
+    } catch (Exception $e) {
+      return response()->json(
+        [
+          'status' => 0,
+          'message' => $e->getMessage()
+        ]
+      );
+    }
+
+  }
+
+  public function delete(Request $request)
+  {
+
+    $validator = Validator::make($request->all(), [
+      'user_id' => 'required',
+    ]);
+
+    if ($validator->fails()) {
+      return response()->json(
+        [
+          'status' => 0,
+          'message' => $validator->errors()->first()
+        ]
+      );
+    }
+
+    try {
+
+      $user = User::findOrFail($request->user_id);
+
+      $user->delete();
+
+      return response()->json([
+        'status' => 1,
+        'message' => 'success',
+      ]);
+
+    } catch (Exception $e) {
+      return response()->json(
+        [
+          'status' => 0,
+          'message' => $e->getMessage()
+        ]
+      );
+    }
+
+  }
+
+  public function restore(Request $request)
+  {
+
+    $validator = Validator::make($request->all(), [
+      'user_id' => 'required',
+    ]);
+
+    if ($validator->fails()) {
+      return response()->json(
+        [
+          'status' => 0,
+          'message' => $validator->errors()->first()
+        ]
+      );
+    }
+
+    try {
+
+      $user = User::withTrashed()->findOrFail($request->user_id);
+
+      $user->restore();
+
+      return response()->json([
+        'status' => 1,
+        'message' => 'success',
+        'data' => new UserResource($user)
+      ]);
+
+    } catch (Exception $e) {
+      return response()->json(
+        [
+          'status' => 0,
+          'message' => $e->getMessage()
+        ]
+      );
+    }
+
+  }
+
+  public function change_password(Request $request)
+  {
+
+    $validator = Validator::make($request->all(), [
+      'old_password' => 'required',
+      'new_password' => 'required|min:8|confirmed',
+    ]);
+
+
+
+    if ($validator->fails()) {
+      return response()->json([
+        'status' => 0,
+        'message' => $validator->errors()->first()
+      ]);
 
     }
+
+    $user = auth()->user();
+
+    if (Hash::check($request->old_password, $user->password)) {
+
+      $user->password = Hash::make($request->new_password);
+      $user->save();
+
+      return response()->json([
+        'status' => 1,
+        'message' => 'password changed'
+      ]);
+
+    } else {
+
+      return response()->json([
+        'status' => 0,
+        'message' => 'wrong password'
+      ]);
+
+    }
+
+  }
+
+  public function deactivate(Request $request)
+  {
+    try {
+
+      $user = $request->user();
+
+      $user->update(['status' => 2, 'email' => null, 'fcm_token' => null]);
+
+      $user->tokens()->delete();
+
+      return response()->json([
+        'status' => 1,
+        'message' => 'success',
+      ]);
+    } catch (Exception $e) {
+      return response()->json([
+        'status' => 0,
+        'message' => $e->getMessage(),
+      ]);
+    }
+
+  }
 }
