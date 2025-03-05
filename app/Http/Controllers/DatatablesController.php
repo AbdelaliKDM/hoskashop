@@ -733,12 +733,12 @@ class DatatablesController extends Controller
   {
 
     $users = User::where('role', 1)->whereIn('status', [0, 1])->get();
-
+    $countUserTypes = UserType::count();
     return datatables()
       ->of($users)
       ->addIndexColumn()
 
-      ->addColumn('action', function ($row) {
+      ->addColumn('action', function ($row) use ($countUserTypes) {
         $btn = '';
 
         if ($row->status == 1) {
@@ -746,8 +746,9 @@ class DatatablesController extends Controller
         } else {
           $btn .= '<button class="btn btn-icon btn-label-danger inline-spacing restore" title="' . __('Activate') . '" table_id="' . $row->id . '"><span class="tf-icons bx bx-check-circle"></span></button>';
         }
+        if($countUserTypes > 1){
         $btn .= '<button class="btn btn-icon btn-label-info inline-spacing update" title="' . __('Edit') . '" table_id="' . $row->id . '"><span class="tf-icons bx bx-edit"></span></button>';
-
+        }
 
 
 
@@ -757,6 +758,14 @@ class DatatablesController extends Controller
       ->addColumn('name', function ($row) {
 
         return $row->fullname();
+
+      })
+      ->addColumn('userType', function ($row) {
+        $type = UserType::find($row->user_type_id);
+        if(Session::get('locale') == 'en'){
+          return $type->name_en;
+        }
+        return $type->name_ar;
 
       })
 

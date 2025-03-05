@@ -228,7 +228,7 @@
 
                 Swal.fire({
                     title: "{{ __('Warning') }}",
-                    text: "{{ __('Are you sure?') }}",
+                    text: "{{ __('When you delete this type the user with this type will be normal buyers?') }}",
                     icon: 'warning',
                     showCancelButton: true,
                     confirmButtonColor: '#3085d6',

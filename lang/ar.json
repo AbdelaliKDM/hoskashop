@@ -432,5 +432,6 @@
     "Add User Type": "إضافة نوع مشتري",
     "User Types Table": "جدول أنواع المشتريين",
     "Description Ar": "الوصف بالعربية",
-    "Description En": "الوصف بالانجليزية"
+    "Description En": "الوصف بالانجليزية",
+    "When you delete this type the user with this type will be normal buyers?":"عند حذف هذا النوع سيتم تحويل المستخدمين الذين يملكون هذا النوع إلى مشترين عاديين"
 }

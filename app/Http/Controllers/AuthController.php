@@ -123,7 +123,8 @@ class AuthController extends Controller
         $user->save();
       }
       $userType = UserType::find($user->user_type_id);
-      $user->user_type = $request->lang == 'en' ? $userType->name_en : $userType->name_ar;
+      $lang = $request->header('Accept-Language');
+      $user->user_type = $lang == 'en' ? $userType->name_en : $userType->name_ar;
       $token = $user->createToken($this->random())->plainTextToken;
 
       return response()->json([

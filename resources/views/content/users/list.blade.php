@@ -98,6 +98,11 @@
                 },
 
                 {
+                    data: 'userType',
+                    name: 'userType'
+                },
+
+                {
                     data: 'phone',
                     name: 'phone'
                 },

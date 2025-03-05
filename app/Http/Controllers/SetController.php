@@ -31,7 +31,8 @@ class SetController extends Controller
     $user = auth()->user();
     if($user){
       $userType = UserType::where('id', $user->user_type_id)->first();
-      $type = $request->lang == 'en' ? $userType->name_en : $userType->name_ar;
+      $lang = $request->header('Accept-Language');
+      $type = $lang == 'en' ? $userType->name_en : $userType->name_ar;
       $settings->put('user_type', $type);
       $settings->put('user_type_id', $userType->id);
     }

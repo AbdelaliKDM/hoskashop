@@ -216,7 +216,7 @@ Route::group(['middleware' => ['auth']], function () {
         Route::get('/generate', [CouponController::class, 'generate']);
     });
 
-    Route::prefix('user')->middleware('role:0,1')->group(function () {
+    Route::prefix('user')->middleware('role:0,1,3')->group(function () {
       Route::get('/browse', [UserController::class, 'index'])->name('user-browse');
       Route::get('/list', [DatatablesController::class, 'users'])->name('user-list');
       Route::post('/update', [UserController::class, 'update']);

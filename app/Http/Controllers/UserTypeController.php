@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\User;
 use App\Models\UserType;
 use Exception;
 use Illuminate\Http\Request;
@@ -110,6 +111,11 @@ class UserTypeController extends Controller
     try{
 
       $userType = UserType::findOrFail($request->user_type_id);
+
+      $users = User::where('user_type_id', $userType->id)->get();
+      foreach($users as $user){
+        $user->update(['user_type_id' => 1]);
+      }
 
       $userType->prices()->delete();
 
