@@ -100,6 +100,12 @@ class UserTypeController extends Controller
         ]
       );
     }
+    if($request->user_type_id == 1){
+      return response()->json([
+        'status' => 0,
+        'message' => 'you can not delete this user type'
+      ]);
+    }
 
     try{
 

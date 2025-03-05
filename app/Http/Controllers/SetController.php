@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Set;
 use App\Models\Coupon;
 use App\Models\Region;
+use App\Models\UserType;
 use App\Rules\ValidCoupon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
@@ -23,10 +24,18 @@ class SetController extends Controller
 
   }
 
-  public function get()
+  public function get(Request $request)
   {
 
     $settings = Set::pluck('value', 'name');
+    $user = auth()->user();
+    if($user){
+      $userType = UserType::where('id', $user->user_type_id)->first();
+      $type = $request->lang == 'en' ? $userType->name_en : $userType->name_ar;
+      $settings->put('user_type', $type);
+      $settings->put('user_type_id', $userType->id);
+    }
+
 
     return response()->json([
       'status' => 1,
