@@ -18,7 +18,7 @@ class AdResource extends JsonResource
           'name' => $this->name,
           'type' => $this->type,
           'url' => $this->url,
-          'image' => $this->image,
+          'image' => asset($this->image),
           'product_id' => $this->product?->id
         ];
     }
