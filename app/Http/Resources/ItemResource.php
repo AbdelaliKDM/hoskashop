@@ -37,7 +37,7 @@ class ItemResource extends JsonResource
           'unit_type' => is_null($product) ? null : $product->unit?->name($request->header('Accept-Language','ar')),
           'discount_amount' => $discount ,
           'status' => $product?->status,
-          'image' => $product?->image,
+          'image' => asset($product?->image),
           'quantity' => $this->quantity
         ];
     }

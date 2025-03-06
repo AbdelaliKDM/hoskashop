@@ -29,7 +29,7 @@ class InvoiceController extends Controller
       return response()->json([
         'status' => 1,
         'message' => 'success',
-        'data' => $invoice->pdf()
+        'data' => asset($invoice->pdf())
       ]);
 
     } catch (Exception $e) {
