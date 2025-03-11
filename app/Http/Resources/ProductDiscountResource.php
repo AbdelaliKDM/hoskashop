@@ -34,7 +34,7 @@ class ProductDiscountResource extends JsonResource
           'unit_id' => $this->unit_id,
           'unit_type' => $this->unit?->name($request->header('Accept-Language','ar')),
           'status' => $this->status,
-          'image' => $this->image,
+          'image' => asset($this->image),
           'is_discounted' => is_null($this->discount_id) ? false : true,
           'discount_amount' => is_null($this->amount) ? 0 : $this->amount,
           'start_date' => $this->start_date,

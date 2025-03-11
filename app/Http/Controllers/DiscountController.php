@@ -230,7 +230,8 @@ class DiscountController extends Controller
     $discounts = DB::table('discounts')
     ->WhereRaw('? between start_date and end_date', Carbon::now()->toDateString())
     ->join('products','discounts.product_id','products.id')
-    ->join('subcategories','products.subcategory_id','subcategories.id')
+    ->join('product_subcategories','products.id','product_subcategories.product_id')
+    ->join('subcategories','product_subcategories.subcategory_id','subcategories.id')
     ->join('categories','subcategories.category_id','categories.id')
     ->orderBy('categories.created_at','DESC')->groupBy(DB::raw('categories.id'))
     ->select('categories.id')->get()->pluck('id')->toArray();

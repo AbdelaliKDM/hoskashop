@@ -23,6 +23,10 @@ class ProductResource extends JsonResource
 
         $this->image ? array_unshift($images,$this->image) : $images;
 
+        $images = array_map(function($image) {
+          return asset($image);
+        }, $images);
+
         return [
           'id' => $this->id,
           //'subcategory_id' => $this->subcategory_id,
