@@ -11,6 +11,7 @@
         @if (in_array(auth()->user()->role, [0, 1, 2, 3, 5]))
             <div class="col-md-auto">
                 <button type="button" class="btn btn-primary" id="create">{{ __('Add Product') }}</button>
+                <button type="button" class="btn btn-secondary" id="importButton">{{ __('Import Products') }}</button>
             </div>
         @endif
     </h4>
@@ -18,12 +19,11 @@
     <!-- Basic Bootstrap Table -->
     <div class="card">
         <div class="table-responsive text-nowrap">
-
             <div class="table-header row justify-content-between">
                 <h5 class="col-md-auto">{{ __('Products table') }}</h5>
                 <div class="col-md-auto">
                     <select class="form-select filter-select" id="category" name="category">
-                        <option disabled value=""> {{ __('Category filter') }}</option>
+                        <option disabled value="">{{ __('Category filter') }}</option>
                         @foreach ($categories as $category)
                             <option value="{{ $category->id }}"> {{ $category->name }} </option>
                         @endforeach
@@ -31,21 +31,21 @@
                 </div>
                 <div class="col-md-auto">
                     <select class="form-select filter-select" id="subcategory" name="subcategory">
-                        <option disabled value=""> {{ __('Subcategory filter') }} </option>
+                        <option disabled value="">{{ __('Subcategory filter') }}</option>
                     </select>
                 </div>
                 <div class="col-md-auto" hidden>
                     <select class="form-select filter-select" id="discount" name="discount">
-                        <option disabled value=""> {{ __('Discount filter') }}</option>
-                        <option value="1"> {{ __('Discounted') }}</option>
-                        <option value="2"> {{ __('Not discounted') }}</option>
+                        <option disabled value="">{{ __('Discount filter') }}</option>
+                        <option value="1">{{ __('Discounted') }}</option>
+                        <option value="2">{{ __('Not discounted') }}</option>
                     </select>
                 </div>
                 <div class="col-md-auto">
                     <select class="form-select filter-select" id="availability" name="availability">
-                        <option disabled value=""> {{ __('Availability filter') }}</option>
-                        <option value="1"> {{ __('Available') }}</option>
-                        <option value="2"> {{ __('Unavailable') }}</option>
+                        <option disabled value="">{{ __('Availability filter') }}</option>
+                        <option value="1">{{ __('Available') }}</option>
+                        <option value="2">{{ __('Unavailable') }}</option>
                     </select>
                 </div>
             </div>
@@ -66,7 +66,7 @@
         </div>
     </div>
 
-    {{-- product modal --}}
+    {{-- Product Modal --}}
     <div class="modal fade" id="modal" aria-hidden="true">
         <div class="modal-dialog modal-xl" role="document">
             <div class="modal-content">
@@ -77,16 +77,14 @@
                 <div class="modal-body">
                     <input type="text" id="form_type" hidden />
                     <input type="text" class="form-control" id="id" name="id" hidden />
-                    <form class="form-horizontal" onsubmit="event.preventDefault()" action="#"
-                        enctype="multipart/form-data" id="form">
+                    <form class="form-horizontal" onsubmit="event.preventDefault()" action="#" enctype="multipart/form-data" id="form">
                         <div class="row">
                             <div class="col-md-6">
                                 <div class="card-body">
                                     <div class="d-flex align-items-start align-items-sm-center gap-4">
                                         <div hidden>
                                             <img src="{{ asset('assets/img/icons/file-not-found.jpg') }}"
-                                                alt="image" class="d-block rounded" height="100" width="100"
-                                                id="old-image" />
+                                                alt="image" class="d-block rounded" height="100" width="100" id="old-image" />
                                         </div>
                                         <img src="{{ asset('assets/img/icons/file-not-found.jpg') }}" alt="image"
                                             class="d-block rounded" height="100" width="100" id="uploaded-image" />
@@ -116,20 +114,20 @@
 
                                 <!-- Loop for Unit Prices for different user types -->
                                 <div class="row justify-content-between p-2">
-                                  @foreach ($userTypes as $ut)
-                                  <div class="form-group col-md-6">
-                                    <label class="form-label" for="unit_price_{{ $ut->id }}">{{ __('Price') }} {{ $ut->name_ar }}</label>
-                                    <input type="text" class="form-control" id="unit_price_{{ $ut->id }}" name="unit_price_{{ $ut->id }}"
-                                        placeholder="{{ __('Unit price') }}" />
-                                   </div>
-                                  @endforeach
+                                    @foreach ($userTypes as $ut)
+                                        <div class="form-group col-md-6">
+                                            <label class="form-label" for="unit_price_{{ $ut->id }}">{{ __('Price') }} {{ $ut->name_ar }}</label>
+                                            <input type="text" class="form-control" id="unit_price_{{ $ut->id }}" name="unit_price_{{ $ut->id }}"
+                                                placeholder="{{ __('Unit price') }}" />
+                                        </div>
+                                    @endforeach
                                 </div>
 
                                 <div class="row justify-content-between p-2">
                                     <div class="form-group col-md-6">
                                         <label class="form-label" for="category_ids">{{ __('Category') }}</label>
                                         <select class="selectpicker form-control" id="category_ids" multiple>
-                                            <option disabled value=""> {{ __('Select category') }}</option>
+                                            <option disabled value="">{{ __('Select category') }}</option>
                                             @foreach ($categories as $category)
                                                 <option value="{{ $category->id }}"> {{ $category->name }} </option>
                                             @endforeach
@@ -137,9 +135,9 @@
                                     </div>
 
                                     <div class="form-group col-md-6">
-                                        <label class="form-label" for="subcategory_id">{{ __('Subcategory') }}</label>
+                                        <label class="form-label" for="subcategory_ids">{{ __('Subcategory') }}</label>
                                         <select class="selectpicker form-control" id="subcategory_ids" multiple>
-                                            <option disabled value=""> {{ __('Select category first') }} </option>
+                                            <option disabled value="">{{ __('Select category first') }}</option>
                                         </select>
                                     </div>
                                 </div>
@@ -148,7 +146,7 @@
                                     <div class="form-group col-md-6">
                                         <label class="form-label" for="unit_id">{{ __('Unit type') }}</label>
                                         <select class="form-select" id="unit_id" name="unit_id">
-                                            <option disabled value=""> {{ __('Select category') }}</option>
+                                            <option disabled value="">{{ __('Select category') }}</option>
                                             @foreach ($units as $unit)
                                                 <option value="{{ $unit->id }}"> {{ $unit->name(session('locale')) }}</option>
                                             @endforeach
@@ -158,8 +156,8 @@
                                     <div class="form-group col-md-6">
                                         <label class="form-label" for="status">{{ __('Status') }}</label>
                                         <select class="form-select" id="status" name="status">
-                                            <option value="1"> {{ __('Available') }}</option>
-                                            <option value="2"> {{ __('Unavailable') }}</option>
+                                            <option value="1">{{ __('Available') }}</option>
+                                            <option value="2">{{ __('Unavailable') }}</option>
                                         </select>
                                     </div>
                                 </div>
@@ -174,9 +172,9 @@
 
                                 <!-- Loop for Pack Prices for different user types -->
                                 @foreach ($userTypes as $ut)
-                                  <label class="form-label" for="pack_price_{{ $ut->id }}">{{ __('Pack price') }} {{ $ut->name_ar }}</label>
-                                  <input type="text" class="form-control" id="pack_price_{{ $ut->id }}" name="pack_price_{{ $ut->id }}"
-                                      placeholder="{{ __('Pack price') }}" />
+                                    <label class="form-label" for="pack_price_{{ $ut->id }}">{{ __('Pack price') }} {{ $ut->name_ar }}</label>
+                                    <input type="text" class="form-control" id="pack_price_{{ $ut->id }}" name="pack_price_{{ $ut->id }}"
+                                        placeholder="{{ __('Pack price') }}" />
                                 @endforeach
 
                                 <div class="mb-3">
@@ -185,17 +183,39 @@
                                 </div>
 
                                 <div class="mb-3">
-                                    <label for="" class="form-label">{{ __('Description') }}</label>
+                                    <label class="form-label" for="description">{{ __('Description') }}</label>
                                     <textarea name="description" id="description" class="form-control" rows="4"></textarea>
                                 </div>
                             </div>
                         </div>
 
-                        <div class="mb-3" style="text-align: center">
-                            <button type="submit" id="submit" name="submit"
-                                class="btn btn-primary">{{ __('Send') }}</button>
+                        <div class="mb-3 text-center">
+                            <button type="submit" id="submit" name="submit" class="btn btn-primary">{{ __('Send') }}</button>
                         </div>
 
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    {{-- Import Modal --}}
+    <div class="modal fade" id="importModal" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h4 class="fw-bold py-1 mb-1">{{ __('Import Products') }}</h4>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <form id="importForm" enctype="multipart/form-data" onsubmit="event.preventDefault()" action="{{ route('products.import') }}">
+                        <div class="mb-3">
+                            <label for="importFile" class="form-label">{{ __('Select Excel File (.xlsx, .xls)') }}</label>
+                            <input type="file" name="file" id="importFile" class="form-control" accept=".xlsx,.xls" required/>
+                        </div>
+                        <div class="mb-3 text-center">
+                            <button type="submit" class="btn btn-primary">{{ __('Import') }}</button>
+                        </div>
                     </form>
                 </div>
             </div>
@@ -210,7 +230,6 @@
             load_data();
 
             function load_data(category = null, subcategory = null, discount = null, availability = null) {
-                //$.fn.dataTable.moment( 'YYYY-M-D' );
                 var table = $('#laravel_datatable').DataTable({
                     language: {!! file_get_contents(base_path('lang/' . session('locale', 'en') . '/datatable.json')) !!},
                     responsive: true,
@@ -235,23 +254,27 @@
                         { data: 'name', name: 'name' },
                         { data: 'price', name: 'price' },
                         { data: 'created_at', name: 'created_at' },
-                        { data: 'availability', name: 'availability',
-                          render: function(data) {
-                              if (data == false) {
-                                  return '<span class="badge bg-danger">{{ __('No') }}</span>';
-                              } else {
-                                  return '<span class="badge bg-success">{{ __('Yes') }}</span>';
-                              }
-                          }
+                        {
+                            data: 'availability',
+                            name: 'availability',
+                            render: function(data) {
+                                if (data == false) {
+                                    return '<span class="badge bg-danger">{{ __('No') }}</span>';
+                                } else {
+                                    return '<span class="badge bg-success">{{ __('Yes') }}</span>';
+                                }
+                            }
                         },
-                        { data: 'is_discounted', name: 'is_discounted',
-                          render: function(data) {
-                              if (data == false) {
-                                  return '<span class="badge bg-danger">{{ __('No') }}</span>';
-                              } else {
-                                  return '<span class="badge bg-success">{{ __('Yes') }}</span>';
-                              }
-                          }
+                        {
+                            data: 'is_discounted',
+                            name: 'is_discounted',
+                            render: function(data) {
+                                if (data == false) {
+                                    return '<span class="badge bg-danger">{{ __('No') }}</span>';
+                                } else {
+                                    return '<span class="badge bg-success">{{ __('Yes') }}</span>';
+                                }
+                            }
                         },
                         { data: 'discount', name: 'discount' },
                         { data: 'action', name: 'action', searchable: false }
@@ -315,6 +338,42 @@
                 $("#modal").modal('show');
             });
 
+            $('#importButton').on('click', function() {
+                $('#importModal').modal('show');
+            });
+
+            $('#importForm').on('submit', function(e) {
+                e.preventDefault();
+                var formData = new FormData(this);
+                $.ajax({
+                    url: $(this).attr('action'),
+                    data: formData,
+                    type: 'POST',
+                    headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') },
+                    processData: false,
+                    contentType: false,
+                    success: function(response) {
+                        if (response.status == 1) {
+                            Swal.fire({
+                                title: "{{ __('Success') }}",
+                                text: "{{ __('Products imported successfully') }}",
+                                icon: 'success',
+                                confirmButtonText: 'Ok'
+                            }).then((result) => {
+                                $('#importModal').modal('hide');
+                                $('#laravel_datatable').DataTable().ajax.reload();
+                            });
+                        } else {
+                            Swal.fire("{{ __('Error') }}", response.message, 'error');
+                        }
+                    },
+                    error: function(data) {
+                        var errors = data.responseJSON;
+                        Swal.fire("{{ __('Error') }}", errors.message, 'error');
+                    }
+                });
+            });
+
             $(document.body).on('click', '.update', function() {
                 document.getElementById('form').reset();
                 document.getElementById('form_type').value = "update";
@@ -334,10 +393,10 @@
                             document.getElementById('unit_name').value = response.data.unit_name;
                             document.getElementById('pack_name').value = response.data.pack_name;
                             @foreach ($userTypes as $ut)
-                              prices = response.data.prices;
-                              price = prices.find(price => price?.user_type_id == {{ $ut->id }});
-                              document.getElementById('unit_price_{{ $ut->id }}').value = price?.unit_price ?? 0;
-                              document.getElementById('pack_price_{{ $ut->id }}').value = price?.pack_price ?? 0;
+                                prices = response.data.prices;
+                                price = prices.find(price => price?.user_type_id == {{ $ut->id }});
+                                document.getElementById('unit_price_{{ $ut->id }}').value = price?.unit_price ?? 0;
+                                document.getElementById('pack_price_{{ $ut->id }}').value = price?.pack_price ?? 0;
                             @endforeach
                             document.getElementById('pack_units').value = response.data.pack_units;
                             document.getElementById('unit_id').value = response.data.unit_id;
@@ -478,8 +537,7 @@
             $(document.body).on('change', '.image-input', function() {
                 const fileInput = document.querySelector('.image-input');
                 if (fileInput.files[0]) {
-                    document.getElementById('uploaded-image').src =
-                        window.URL.createObjectURL(fileInput.files[0]);
+                    document.getElementById('uploaded-image').src = window.URL.createObjectURL(fileInput.files[0]);
                 }
             });
             $(document.body).on('click', '.image-reset', function() {

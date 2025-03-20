@@ -2,8 +2,11 @@
 
 namespace App\Http\Controllers;
 
+use App\Exports\ProductTemplateExport;
+use App\Imports\ProductsImport;
 use App\Models\Price;
 use App\Models\UserType;
+use Maatwebsite\Excel\Facades\Excel;
 use Session;
 use Exception;
 use App\Models\Unit;
@@ -50,7 +53,7 @@ class ProductController extends Controller
       ]);
     }
 
-    try {
+    // try {
       $data = $request->except('image');
       foreach ($data as $key => $value) {
         if (preg_match('/^(unit_price_|pack_price_)/', $key)) {
@@ -89,12 +92,12 @@ class ProductController extends Controller
         'data' => new ProductResource($product)
       ]);
 
-    } catch (\Exception $e) {
-      return response()->json([
-        'status' => 0,
-        'message' => $e->getMessage()
-      ]);
-    }
+    // } catch (\Exception $e) {
+    //   return response()->json([
+    //     'status' => 0,
+    //     'message' => $e->getMessage()
+    //   ]);
+    // }
   }
 
 
@@ -327,4 +330,37 @@ class ProductController extends Controller
     }
 
   }
+
+
+  public function downloadTemplate()
+  {
+      $categories = Category::with('subcategories')->get();
+      $units = Unit::all();
+      $userTypes = UserType::all();
+
+      return Excel::download(new ProductTemplateExport($categories, $units, $userTypes), 'product_template.xlsx');
+  }
+
+    public function import(Request $request)
+    {
+        $validator = Validator::make($request->all(), [
+            'file' => 'required|mimes:xlsx,xls'
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json([
+                'status'  => 0,
+                'message' => $validator->errors()->first(),
+            ]);
+        }
+
+        $userTypes = UserType::all();
+            $product = Excel::import(new ProductsImport($userTypes), $request->file('file'));
+            // dd($product);
+            return response()->json([
+                'status'  => 1,
+                'message' => 'Products imported successfully'
+            ]);
+
+    }
 }

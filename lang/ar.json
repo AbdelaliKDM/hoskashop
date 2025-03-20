@@ -433,5 +433,14 @@
     "User Types Table": "جدول أنواع المشتريين",
     "Description Ar": "الوصف بالعربية",
     "Description En": "الوصف بالانجليزية",
-    "When you delete this type the user with this type will be normal buyers?":"عند حذف هذا النوع سيتم تحويل المستخدمين الذين يملكون هذا النوع إلى مشترين عاديين"
+    "When you delete this type the user with this type will be normal buyers?":"عند حذف هذا النوع سيتم تحويل المستخدمين الذين يملكون هذا النوع إلى مشترين عاديين",
+    "Product Settings": "إعدادات المنتج",
+    "Download template": "تحميل القالب",
+    "Import Products": "استيراد المنتجات",
+    "Import": "استيراد",
+    "Select Excel File (.xlsx, .xls)": "اختر ملف اكسل",
+    "Notification & Region Settings":"إعدادات الإشعارات والمنطقة",
+    "Enable Notifications": "تفعيل الإشعارات",
+    "Enable Coupons": "تفعيل القسائم",
+    "Default Region":"المنطقة الافتراضية"
 }

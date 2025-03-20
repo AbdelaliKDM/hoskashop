@@ -252,6 +252,8 @@ Route::group(['middleware' => ['auth']], function () {
         Route::get('/{id}/images', [ProductImageController::class, 'index'])->name('product-images');
         Route::get('/{id}/videos', [ProductVideoController::class, 'index'])->name('product-videos');
         Route::get('/{id}/discounts', [DiscountController::class, 'index'])->name('product-discounts');
+        Route::get('/download-template', [ProductController::class, 'downloadTemplate'])->name('download.template');
+        Route::post('/import-products', [ProductController::class, 'import'])->name('products.import');
       });
 
       Route::get('/browse', [ProductController::class, 'index'])->name('product-browse');

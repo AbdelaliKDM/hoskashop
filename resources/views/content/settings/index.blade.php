@@ -314,6 +314,21 @@
     </div>
   </div>
 </div>
+
+<h4 class="fw-bold py-3 mb-3">
+  <span class="text-muted fw-light"></span> {{ __('Product Settings') }}
+</h4>
+<div class="row">
+<div class="col-md-12">
+  <div class="card mb-4">
+    <div class="card-body">
+  <div class="mb-3" style="text-align: center">
+    <a href="{{ route('download.template') }}" class="btn btn-primary">{{ __('Download template') }}</a>
+  </div>
+    </div>
+</div>
+</div>
+</div>
         <div class="mb-3" style="text-align: center">
             <button type="submit" id="submit" name="submit" class="btn btn-primary">{{ __('Send') }}</button>
         </div>
