@@ -68,7 +68,7 @@ class ProductsImport implements ToModel, WithHeadingRow
         $subcategoryName = trim($row["subcategory"] ?? $row["الفئة المحددة"] ?? '');
 
         if (!empty($subcategoryName)) {
-            $subcategory = SubCategory::where('name', $subcategoryName)
+            $subcategory = Subcategory::where('name', $subcategoryName)
                                     ->first();
 
             if ($subcategory) {
