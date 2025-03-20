@@ -4,7 +4,7 @@ namespace App\Imports;
 
 use App\Models\Product;
 use App\Models\Price;
-use App\Models\SubCategory;
+use App\Models\Subcategory;
 use App\Models\Category;
 use App\Models\Unit;
 use Maatwebsite\Excel\Concerns\ToModel;
